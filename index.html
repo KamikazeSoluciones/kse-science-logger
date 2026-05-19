@@ -53,7 +53,7 @@ h1{
     box-shadow:0 0 25px rgba(0,0,0,0.3);
 }
 
-button{
+#connectBtn{
 
     width:100%;
 
@@ -63,17 +63,37 @@ button{
 
     border-radius:15px;
 
-    background:linear-gradient(
-    45deg,
-    rgba(37,99,235,0.9),
-    rgba(56,189,248,0.95)
-);
-
-    color:white;
-
     font-size:18px;
 
     cursor:pointer;
+
+    transition:all 0.3s ease;
+
+    background:rgba(255,255,255,0.08);
+
+    color:rgba(255,255,255,0.6);
+
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.connected{
+
+    background:linear-gradient(
+        45deg,
+        rgba(37,99,235,0.95),
+        rgba(56,189,248,0.95)
+    ) !important;
+
+    color:white !important;
+
+    box-shadow:0 0 20px rgba(56,189,248,0.5);
+}
+
+.disconnected{
+
+    background:rgba(255,255,255,0.05) !important;
+
+    color:rgba(255,255,255,0.5) !important;
 }
 
 input{
@@ -275,8 +295,12 @@ input{
 
 <div class="card">
 
-    <button onclick="connectBLE()">
+    <button id="connectBtn"
+            class="disconnected"
+            onclick="connectBLE()">
+
         CONNECT DEVICE
+
     </button>
 
 </div>
@@ -289,7 +313,7 @@ input{
 
     <input type="text"
            id="location"
-           placeholder="Your Location">
+           placeholder="Colosseum - Rome">
 
 </div>
 
@@ -465,13 +489,15 @@ let currentData = {
     base:0
 };
 
-let previousAltitude = 0;
+let bleDevice = null;
+
+let bleServer = null;
 
 async function connectBLE(){
 
     try{
 
-        const device =
+        bleDevice =
             await navigator.bluetooth.requestDevice({
 
                 acceptAllDevices:true,
@@ -482,11 +508,16 @@ async function connectBLE(){
 
             });
 
-        const server =
-            await device.gatt.connect();
+        bleDevice.addEventListener(
+            'gattserverdisconnected',
+            onDisconnected
+        );
+
+        bleServer =
+            await bleDevice.gatt.connect();
 
         const service =
-            await server.getPrimaryService(
+            await bleServer.getPrimaryService(
                 '4fafc201-1fb5-459e-8fcc-c5c9c331914b'
             );
 
@@ -502,14 +533,59 @@ async function connectBLE(){
             handleData
         );
 
-        alert('Connected to KSE Altimeter');
+        updateBTStatus(true);
 
     }
 
     catch(error){
 
-        alert(
-            'Connection Error: ' + error
+        console.log(error);
+
+        updateBTStatus(false);
+    }
+}
+
+function onDisconnected(){
+
+    updateBTStatus(false);
+
+    console.log(
+        'BLE disconnected'
+    );
+}
+
+function updateBTStatus(connected){
+
+    const btn =
+        document.getElementById(
+            'connectBtn'
+        );
+
+    if(connected){
+
+        btn.innerText =
+            'BLUETOOTH CONNECTED';
+
+        btn.classList.remove(
+            'disconnected'
+        );
+
+        btn.classList.add(
+            'connected'
+        );
+    }
+
+    else{
+
+        btn.innerText =
+            'CONNECT DEVICE';
+
+        btn.classList.remove(
+            'connected'
+        );
+
+        btn.classList.add(
+            'disconnected'
         );
     }
 }
@@ -573,7 +649,6 @@ function handleData(event){
 
         arrow.style.color =
             '#fb923c';
-
     }
 
     else{
@@ -595,8 +670,6 @@ function handleData(event){
         arrow.style.color =
             '#38bdf8';
     }
-
-    previousAltitude = data.alt;
 }
 
 function saveMeasurement(){
