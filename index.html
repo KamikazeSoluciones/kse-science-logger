@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>KSE Science Logger</title>
+
+<style>
+
+body{
+    margin:0;
+    padding:20px;
+    font-family:Arial, sans-serif;
+    background:#0f172a;
+    color:white;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.card{
+    background:#1e293b;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:20px;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    background:#2563eb;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    margin-top:10px;
+    font-size:16px;
+}
+
+.label{
+    opacity:0.7;
+    margin-top:10px;
+}
+
+.value{
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+#log{
+    white-space:pre-wrap;
+    font-size:13px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🌍 KSE Science Logger</h1>
+
+<div class="card">
+    <button onclick="connectBLE()">
+        CONNECT DEVICE
+    </button>
+</div>
+
+<div class="card">
+
+    <div class="label">LOCATION</div>
+
+    <input type="text"
+           id="location"
+           placeholder="Colosseum - Rome">
+
+</div>
+
+<div class="card">
+
+    <div class="label">ALTITUDE</div>
+    <div class="value" id="alt">-- m</div>
+
+    <div class="label">TEMPERATURE</div>
+    <div class="value" id="temp">-- °C</div>
+
+    <div class="label">HUMIDITY</div>
+    <div class="value" id="hum">-- %</div>
+
+    <div class="label">PRESSURE</div>
+    <div class="value" id="pres">-- hPa</div>
+
+</div>
+
+<div class="card">
+
+    <button onclick="saveMeasurement()">
+        SAVE MEASUREMENT
+    </button>
+
+</div>
+
+<div class="card">
+
+    <button onclick="exportCSV()">
+        EXPORT CSV
+    </button>
+
+</div>
+
+<div class="card">
+
+    <div id="log"></div>
+
+</div>
+
+<script>
+
+let measurements = [];
+
+let currentData = {
+    temp:0,
+    hum:0,
+    pres:0,
+    alt:0
+};
+
+async function connectBLE(){
+
+    try{
+
+        const device = await navigator.bluetooth.requestDevice({
+
+            filters:[
+                { name:'KSE_Altimeter' }
+            ],
+
+            optionalServices:[
+                '4fafc201-1fb5-459e-8fcc-c5c9c331914b'
+            ]
+
+        });
+
+        const server = await device.gatt.connect();
+
+        const service = await server.getPrimaryService(
+            '4fafc201-1fb5-459e-8fcc-c5c9c331914b'
+        );
+
+        const characteristic = await service.getCharacteristic(
+            'beb5483e-36e1-4688-b7f5-ea07361b26a8'
+        );
+
+        await characteristic.startNotifications();
+
+        characteristic.addEventListener(
+            'characteristicvaluechanged',
+            handleData
+        );
+
+        alert('Connected to KSE Altimeter');
+
+    }
+
+    catch(error){
+
+        alert('Connection Error: ' + error);
+
+    }
+
+}
+
+function handleData(event){
+
+    let value = new TextDecoder().decode(event.target.value);
+
+    let data = JSON.parse(value);
+
+    currentData = data;
+
+    document.getElementById('temp').innerText =
+        data.temp + ' °C';
+
+    document.getElementById('hum').innerText =
+        data.hum + ' %';
+
+    document.getElementById('pres').innerText =
+        data.pres + ' hPa';
+
+    document.getElementById('alt').innerText =
+        data.alt + ' m';
+}
+
+function saveMeasurement(){
+
+    let location =
+        document.getElementById('location').value;
+
+    let entry = {
+
+        location: location,
+
+        temp: currentData.temp,
+        hum: currentData.hum,
+        pres: currentData.pres,
+        alt: currentData.alt,
+
+        time: new Date().toLocaleString()
+
+    };
+
+    measurements.push(entry);
+
+    document.getElementById('log').innerText +=
+        entry.time +
+        ' | ' +
+        entry.location +
+        ' | ALT: ' +
+        entry.alt +
+        'm\n';
+}
+
+function exportCSV(){
+
+    let csv =
+        'TIME,LOCATION,ALTITUDE,TEMP,HUMIDITY,PRESSURE\n';
+
+    measurements.forEach(m => {
+
+        csv +=
+            m.time + ',' +
+            m.location + ',' +
+            m.alt + ',' +
+            m.temp + ',' +
+            m.hum + ',' +
+            m.pres + '\n';
+
+    });
+
+    const blob = new Blob([csv], {
+        type:'text/csv'
+    });
+
+    const a = document.createElement('a');
+
+    a.href = URL.createObjectURL(blob);
+
+    a.download = 'kse_measurements.csv';
+
+    a.click();
+}
+
+</script>
+
+</body>
+</html>
