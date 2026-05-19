@@ -4,136 +4,245 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>KSE Science Logger</title>
 
 <style>
 
 body{
+
     margin:0;
     padding:20px;
+
     font-family:Arial,sans-serif;
-    background:#0f172a;
+
     color:white;
+
+    background-image:url('logo.png');
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+
+    background-color:#020617;
 }
 
 h1{
+
     text-align:center;
     margin-bottom:20px;
+
+    text-shadow:0 0 10px rgba(0,0,0,0.6);
 }
 
 .card{
-    background:#1e293b;
+
+    background:rgba(15,23,42,0.55);
+
+    backdrop-filter:blur(12px);
+
     border-radius:20px;
+
     padding:20px;
+
     margin-bottom:20px;
-    box-shadow:0 0 20px rgba(0,0,0,0.3);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    box-shadow:0 0 25px rgba(0,0,0,0.3);
 }
 
 button{
+
     width:100%;
+
     padding:15px;
+
     border:none;
+
     border-radius:15px;
-    background:#2563eb;
+
+    background:linear-gradient(
+        45deg,
+        rgba(37,99,235,0.9),
+        rgba(56,189,248,0.9)
+    );
+
     color:white;
+
     font-size:18px;
+
     cursor:pointer;
 }
 
 button:hover{
+
     opacity:0.9;
 }
 
 input{
+
     width:100%;
+
     padding:12px;
+
     border:none;
+
     border-radius:10px;
+
     margin-top:10px;
+
     font-size:16px;
+
+    background:rgba(255,255,255,0.08);
+
+    color:white;
 }
 
 .label{
+
     opacity:0.7;
+
     margin-top:10px;
+
     font-size:13px;
 }
 
 .value{
+
     font-size:28px;
+
     font-weight:bold;
+
     margin-bottom:15px;
 }
 
 .grid{
+
     display:grid;
+
     grid-template-columns:1fr 1fr;
+
     gap:15px;
 }
 
 .sensorCard{
-    background:#0f172a;
+
+    background:rgba(15,23,42,0.45);
+
     border-radius:15px;
+
     padding:15px;
+
     text-align:center;
+
+    border:1px solid rgba(255,255,255,0.05);
 }
 
 .icon{
+
     font-size:30px;
+
     margin-bottom:10px;
 }
 
 #log{
+
     white-space:pre-wrap;
+
     font-size:13px;
 }
 
 .altimeterContainer{
+
     width:100%;
+
     height:250px;
-    background:#0f172a;
+
+    background:rgba(15,23,42,0.5);
+
     border-radius:20px;
+
     position:relative;
+
     overflow:hidden;
+
     margin-top:15px;
 }
 
 .altitudeBar{
+
     position:absolute;
+
     bottom:0;
+
     width:100%;
+
     height:0%;
-    background:linear-gradient(to top,#2563eb,#38bdf8);
+
+    background:linear-gradient(
+        to top,
+        rgba(37,99,235,0.85),
+        rgba(56,189,248,0.95)
+    );
+
     transition:height 0.5s;
 }
 
 .altitudeText{
+
     position:absolute;
+
     top:10px;
+
     width:100%;
+
     text-align:center;
+
     font-size:24px;
+
     font-weight:bold;
+
+    text-shadow:0 0 10px rgba(0,0,0,0.5);
 }
 
 .measureBox{
-    background:#0f172a;
+
+    background:rgba(15,23,42,0.45);
+
     border-radius:15px;
+
     padding:15px;
+
     margin-top:15px;
 }
 
 .measureTitle{
+
     font-size:13px;
+
     opacity:0.7;
 }
 
 .measureValue{
+
     font-size:22px;
+
     font-weight:bold;
+
     margin-bottom:10px;
+}
+
+.footer{
+
+    text-align:center;
+
+    opacity:0.5;
+
+    font-size:12px;
+
+    margin-top:30px;
 }
 
 </style>
@@ -154,11 +263,13 @@ input{
 
 <div class="card">
 
-    <div class="label">📍 LOCATION</div>
+    <div class="label">
+        📍 LOCATION
+    </div>
 
     <input type="text"
            id="location"
-           placeholder="Your location">
+           placeholder="Colosseum - Rome">
 
 </div>
 
@@ -170,9 +281,16 @@ input{
 
             <div class="icon">🌡️</div>
 
-            <div class="label">TEMPERATURE</div>
+            <div class="label">
+                TEMPERATURE
+            </div>
 
-            <div class="value" id="temp">-- °C</div>
+            <div class="value"
+                 id="temp">
+
+                 -- °C
+
+            </div>
 
         </div>
 
@@ -180,9 +298,16 @@ input{
 
             <div class="icon">💧</div>
 
-            <div class="label">HUMIDITY</div>
+            <div class="label">
+                HUMIDITY
+            </div>
 
-            <div class="value" id="hum">-- %</div>
+            <div class="value"
+                 id="hum">
+
+                 -- %
+
+            </div>
 
         </div>
 
@@ -190,9 +315,16 @@ input{
 
             <div class="icon">📡</div>
 
-            <div class="label">PRESSURE</div>
+            <div class="label">
+                PRESSURE
+            </div>
 
-            <div class="value" id="pres">-- hPa</div>
+            <div class="value"
+                 id="pres">
+
+                 -- hPa
+
+            </div>
 
         </div>
 
@@ -200,9 +332,16 @@ input{
 
             <div class="icon">📏</div>
 
-            <div class="label">ALTITUDE</div>
+            <div class="label">
+                ALTITUDE
+            </div>
 
-            <div class="value" id="alt">-- m</div>
+            <div class="value"
+                 id="alt">
+
+                 -- m
+
+            </div>
 
         </div>
 
@@ -212,7 +351,9 @@ input{
 
 <div class="card">
 
-    <div class="label">📈 ALTITUDE PROGRESS</div>
+    <div class="label">
+        📈 ALTITUDE PROGRESS
+    </div>
 
     <div class="altimeterContainer">
 
@@ -233,7 +374,9 @@ input{
 
 <div class="card">
 
-    <div class="label">🧪 MEASUREMENT SESSION</div>
+    <div class="label">
+        🧪 MEASUREMENT SESSION
+    </div>
 
     <div class="measureBox">
 
@@ -285,11 +428,18 @@ input{
 
 </div>
 
+<div class="footer">
+
+KSE SCIENCE LOGGER • ESP32 BLE
+
+</div>
+
 <script>
 
 let measurements = [];
 
 let currentData = {
+
     temp:0,
     hum:0,
     pres:0,
@@ -339,10 +489,11 @@ async function connectBLE(){
 
     catch(error){
 
-        alert('Connection Error: ' + error);
+        alert(
+            'Connection Error: ' + error
+        );
 
     }
-
 }
 
 function handleData(event){
@@ -378,16 +529,22 @@ function handleData(event){
         data.alt + ' m';
 
     let percent =
-        Math.min(data.alt / 150 * 100,100);
+        Math.min(
+            data.alt / 150 * 100,
+            100
+        );
 
-    document.getElementById('altitudeBar')
-        .style.height = percent + '%';
+    document.getElementById(
+        'altitudeBar'
+    ).style.height = percent + '%';
 }
 
 function saveMeasurement(){
 
     let location =
-        document.getElementById('location').value;
+        document.getElementById(
+            'location'
+        ).value;
 
     let entry = {
 
@@ -400,13 +557,16 @@ function saveMeasurement(){
         base:currentData.base,
         top:currentData.top,
 
-        time:new Date().toLocaleString()
+        time:new Date()
+            .toLocaleString()
 
     };
 
     measurements.push(entry);
 
-    document.getElementById('log').innerText +=
+    document.getElementById(
+        'log'
+    ).innerText +=
 
         entry.time +
         ' | ' +
@@ -421,11 +581,12 @@ function saveMeasurement(){
 function exportCSV(){
 
     let csv =
-        'TIME,LOCATION,ALTITUDE,BASE,TOP,TEMP,HUMIDITY,PRESSURE\n';
+'TIME,LOCATION,ALTITUDE,BASE,TOP,TEMP,HUMIDITY,PRESSURE\n';
 
     measurements.forEach(m => {
 
         csv +=
+
             m.time + ',' +
             m.location + ',' +
             m.alt + ',' +
@@ -434,12 +595,13 @@ function exportCSV(){
             m.temp + ',' +
             m.hum + ',' +
             m.pres + '\n';
-
     });
 
     const blob =
         new Blob([csv],{
+
             type:'text/csv'
+
         });
 
     const a =
