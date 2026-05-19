@@ -7,7 +7,7 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<title>KSE Dynamic Altimeter</title>
+<title>KSE Aviation Altimeter</title>
 
 <style>
 
@@ -18,50 +18,55 @@ body{
 
     font-family:Arial,sans-serif;
 
-    color:white;
-
     background-image:url('logo.png');
     background-size:cover;
     background-position:center;
     background-attachment:fixed;
 
     background-color:#020617;
+
+    color:white;
+}
+
+.mainCard{
+
+    background:rgba(10,15,35,0.55);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:30px;
+
+    padding:25px;
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    box-shadow:0 0 35px rgba(0,0,0,0.45);
+
+    max-width:900px;
+
+    margin:auto;
 }
 
 h1{
 
     text-align:center;
-    margin-bottom:20px;
 
-    text-shadow:0 0 10px rgba(0,0,0,0.6);
-}
+    margin-bottom:25px;
 
-.card{
+    font-size:40px;
 
-    background:rgba(15,23,42,0.45);
-
-    backdrop-filter:blur(14px);
-
-    border-radius:20px;
-
-    padding:20px;
-
-    margin-bottom:20px;
-
-    border:1px solid rgba(255,255,255,0.08);
-
-    box-shadow:0 0 25px rgba(0,0,0,0.3);
+    letter-spacing:2px;
 }
 
 #connectBtn{
 
     width:100%;
 
-    padding:15px;
+    padding:16px;
 
     border:none;
 
-    border-radius:15px;
+    border-radius:18px;
 
     font-size:18px;
 
@@ -73,7 +78,7 @@ h1{
 
     color:rgba(255,255,255,0.6);
 
-    border:1px solid rgba(255,255,255,0.08);
+    margin-bottom:25px;
 }
 
 .connected{
@@ -86,7 +91,7 @@ h1{
 
     color:white !important;
 
-    box-shadow:0 0 20px rgba(56,189,248,0.5);
+    box-shadow:0 0 20px rgba(56,189,248,0.45);
 }
 
 .disconnected{
@@ -96,15 +101,311 @@ h1{
     color:rgba(255,255,255,0.5) !important;
 }
 
+.instrumentPanel{
+
+    position:relative;
+
+    width:100%;
+
+    height:650px;
+
+    border-radius:35px;
+
+    background:radial-gradient(
+        circle,
+        rgba(5,8,20,0.95),
+        rgba(1,2,8,0.98)
+    );
+
+    overflow:hidden;
+
+    border:2px solid rgba(255,255,255,0.06);
+
+    box-shadow:
+        inset 0 0 60px rgba(0,0,0,0.9),
+        0 0 40px rgba(0,0,0,0.5);
+}
+
+.scale{
+
+    position:absolute;
+
+    left:50%;
+
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:140px;
+
+    height:560px;
+}
+
+.centerLine{
+
+    position:absolute;
+
+    left:50%;
+
+    top:0;
+
+    transform:translateX(-50%);
+
+    width:10px;
+
+    height:100%;
+
+    background:linear-gradient(
+        to bottom,
+        #fb923c,
+        #facc15,
+        #38bdf8,
+        #2563eb
+    );
+
+    border-radius:20px;
+}
+
+.tick{
+
+    position:absolute;
+
+    width:100%;
+}
+
+.tickLine{
+
+    position:absolute;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:70px;
+
+    height:2px;
+
+    background:white;
+}
+
+.tickValueLeft{
+
+    position:absolute;
+
+    left:0;
+
+    top:-12px;
+
+    font-size:22px;
+
+    font-weight:bold;
+}
+
+.tickValueRight{
+
+    position:absolute;
+
+    right:0;
+
+    top:-12px;
+
+    font-size:22px;
+
+    font-weight:bold;
+}
+
+.altitudeIndicator{
+
+    position:absolute;
+
+    left:140px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    background:black;
+
+    border:3px solid #00e5ff;
+
+    border-radius:20px;
+
+    width:180px;
+
+    height:110px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:70px;
+
+    font-weight:bold;
+
+    box-shadow:0 0 20px rgba(0,229,255,0.5);
+}
+
+.altitudeArrow{
+
+    position:absolute;
+
+    right:-25px;
+
+    width:0;
+    height:0;
+
+    border-top:15px solid transparent;
+    border-bottom:15px solid transparent;
+    border-left:25px solid white;
+}
+
+.rateIndicator{
+
+    position:absolute;
+
+    right:140px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    background:black;
+
+    border:3px solid white;
+
+    border-radius:20px;
+
+    width:180px;
+
+    height:110px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:50px;
+
+    font-weight:bold;
+}
+
+.rateArrow{
+
+    position:absolute;
+
+    left:-25px;
+
+    width:0;
+    height:0;
+
+    border-top:15px solid transparent;
+    border-bottom:15px solid transparent;
+    border-right:25px solid white;
+}
+
+.infoBox{
+
+    position:absolute;
+
+    color:white;
+}
+
+.refBox{
+
+    left:120px;
+
+    bottom:110px;
+}
+
+.statusBox{
+
+    right:120px;
+
+    bottom:110px;
+}
+
+.label{
+
+    color:#38bdf8;
+
+    font-size:28px;
+
+    font-weight:bold;
+}
+
+.value{
+
+    font-size:42px;
+
+    font-weight:bold;
+}
+
+.small{
+
+    font-size:20px;
+
+    opacity:0.8;
+}
+
+.bottomGrid{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:20px;
+
+    margin-top:25px;
+}
+
+.sensorCard{
+
+    background:rgba(15,23,42,0.45);
+
+    border-radius:20px;
+
+    padding:20px;
+
+    text-align:center;
+
+    border:1px solid rgba(255,255,255,0.05);
+}
+
+.sensorIcon{
+
+    font-size:40px;
+
+    margin-bottom:10px;
+}
+
+.sensorTitle{
+
+    font-size:18px;
+
+    opacity:0.7;
+}
+
+.sensorValue{
+
+    font-size:42px;
+
+    font-weight:bold;
+
+    margin-top:8px;
+}
+
 .actionBtn{
 
     width:100%;
 
-    padding:15px;
+    padding:16px;
 
     border:none;
 
-    border-radius:15px;
+    border-radius:18px;
 
     font-size:18px;
 
@@ -120,209 +421,24 @@ h1{
 
     color:white;
 
-    border:1px solid rgba(255,255,255,0.08);
+    margin-top:20px;
 
     box-shadow:0 0 20px rgba(56,189,248,0.35);
-
-    font-weight:bold;
-
-    letter-spacing:0.5px;
 }
 
-.actionBtn:hover{
+.logBox{
 
-    transform:scale(1.02);
+    margin-top:25px;
 
-    box-shadow:0 0 25px rgba(56,189,248,0.5);
-}
-
-input{
-
-    width:100%;
-
-    padding:12px;
-
-    border:none;
-
-    border-radius:10px;
-
-    margin-top:10px;
-
-    font-size:16px;
-
-    background:rgba(255,255,255,0.08);
-
-    color:white;
-}
-
-.grid{
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:15px;
-}
-
-.sensorCard{
-
-    background:rgba(15,23,42,0.35);
-
-    border-radius:15px;
-
-    padding:15px;
-
-    text-align:center;
-
-    border:1px solid rgba(255,255,255,0.05);
-}
-
-.icon{
-
-    font-size:30px;
-
-    margin-bottom:10px;
-}
-
-.label{
-
-    opacity:0.7;
-
-    font-size:13px;
-
-    margin-bottom:5px;
-}
-
-.value{
-
-    font-size:28px;
-
-    font-weight:bold;
-}
-
-.altimeterContainer{
-
-    position:relative;
-
-    width:100%;
-
-    height:400px;
-
-    background:rgba(15,23,42,0.35);
+    background:rgba(0,0,0,0.35);
 
     border-radius:20px;
 
-    overflow:hidden;
+    padding:20px;
 
-    margin-top:15px;
-}
+    min-height:100px;
 
-.centerLine{
-
-    position:absolute;
-
-    top:50%;
-
-    width:100%;
-
-    height:2px;
-
-    background:rgba(255,255,255,0.15);
-
-    z-index:2;
-}
-
-.altitudeBar{
-
-    position:absolute;
-
-    left:50%;
-
-    transform:translateX(-50%);
-
-    width:70%;
-
-    bottom:50%;
-
-    height:0px;
-
-    border-radius:20px;
-
-    transition:all 0.25s ease;
-}
-
-.arrow{
-
-    position:absolute;
-
-    left:20px;
-
-    top:50%;
-
-    transform:translateY(-50%);
-
-    font-size:45px;
-
-    transition:all 0.25s ease;
-
-    z-index:3;
-}
-
-.altitudeText{
-
-    position:absolute;
-
-    top:15px;
-
-    width:100%;
-
-    text-align:center;
-
-    font-size:32px;
-
-    font-weight:bold;
-
-    z-index:3;
-
-    text-shadow:0 0 15px rgba(0,0,0,0.5);
-}
-
-.measureBox{
-
-    background:rgba(15,23,42,0.35);
-
-    border-radius:15px;
-
-    padding:15px;
-
-    margin-top:15px;
-}
-
-.measureTitle{
-
-    font-size:13px;
-
-    opacity:0.7;
-}
-
-.measureValue{
-
-    font-size:22px;
-
-    font-weight:bold;
-
-    margin-bottom:10px;
-}
-
-.footer{
-
-    text-align:center;
-
-    opacity:0.5;
-
-    font-size:12px;
-
-    margin-top:30px;
+    white-space:pre-wrap;
 }
 
 </style>
@@ -331,194 +447,155 @@ input{
 
 <body>
 
-<h1>🌍 KSE Dynamic Altimeter</h1>
+<div class="mainCard">
 
-<div class="card">
+<h1>LIVE ALTITUDE TRACKER</h1>
 
-    <button id="connectBtn"
-            class="disconnected"
-            onclick="connectBLE()">
+<button id="connectBtn"
+        class="disconnected"
+        onclick="connectBLE()">
 
-        CONNECT DEVICE
+CONNECT DEVICE
 
-    </button>
+</button>
 
-</div>
+<div class="instrumentPanel">
 
-<div class="card">
+<div class="scale">
 
-    <div class="label">
-        📍 LOCATION
-    </div>
-
-    <input type="text"
-           id="location"
-           placeholder="Your Location">
+<div class="centerLine"></div>
 
 </div>
 
-<div class="card">
+<div class="altitudeIndicator">
 
-    <div class="grid">
+<div id="altitudeValue">
+0
+</div>
 
-        <div class="sensorCard">
-
-            <div class="icon">🌡️</div>
-
-            <div class="label">
-                TEMPERATURE
-            </div>
-
-            <div class="value"
-                 id="temp">
-
-                 -- °C
-
-            </div>
-
-        </div>
-
-        <div class="sensorCard">
-
-            <div class="icon">💧</div>
-
-            <div class="label">
-                HUMIDITY
-            </div>
-
-            <div class="value"
-                 id="hum">
-
-                 -- %
-
-            </div>
-
-        </div>
-
-        <div class="sensorCard">
-
-            <div class="icon">📡</div>
-
-            <div class="label">
-                PRESSURE
-            </div>
-
-            <div class="value"
-                 id="pres">
-
-                 -- hPa
-
-            </div>
-
-        </div>
-
-        <div class="sensorCard">
-
-            <div class="icon">📏</div>
-
-            <div class="label">
-                RELATIVE ALTITUDE
-            </div>
-
-            <div class="value"
-                 id="alt">
-
-                 0 m
-
-            </div>
-
-        </div>
-
-    </div>
+<div class="altitudeArrow"></div>
 
 </div>
 
-<div class="card">
+<div class="rateIndicator">
 
-    <div class="label">
-        📈 LIVE ALTITUDE TRACKER
-    </div>
+<div id="rateValue">
+0
+</div>
 
-    <div class="altimeterContainer">
-
-        <div class="centerLine"></div>
-
-        <div class="arrow"
-             id="arrow">
-
-             ➜
-
-        </div>
-
-        <div class="altitudeBar"
-             id="altitudeBar">
-        </div>
-
-        <div class="altitudeText"
-             id="altitudeText">
-
-             0 m
-
-        </div>
-
-    </div>
+<div class="rateArrow"></div>
 
 </div>
 
-<div class="card">
+<div class="infoBox refBox">
 
-    <div class="label">
-        🧪 BASE REFERENCE
-    </div>
+<div class="label">
+REFERENCE
+</div>
 
-    <div class="measureBox">
-
-        <div class="measureTitle">
-            BASE PRESSURE
-        </div>
-
-        <div class="measureValue"
-             id="basePressure">
-
-             -- hPa
-
-        </div>
-
-    </div>
+<div class="small"
+     id="basePressure">
+1008 hPa
+</div>
 
 </div>
 
-<div class="card">
+<div class="infoBox statusBox">
 
-    <button class="actionBtn"
-            onclick="saveMeasurement()">
+<div class="label">
+STATUS
+</div>
 
-        SAVE MEASUREMENT
-
-    </button>
+<div class="small"
+     id="statusText">
+STABLE
+</div>
 
 </div>
 
-<div class="card">
+</div>
 
-    <button class="actionBtn"
-            onclick="exportCSV()">
+<div class="bottomGrid">
 
-        EXPORT CSV
+<div class="sensorCard">
 
-    </button>
+<div class="sensorIcon">🌡️</div>
+
+<div class="sensorTitle">
+TEMP
+</div>
+
+<div class="sensorValue"
+     id="temp">
+0°C
+</div>
 
 </div>
 
-<div class="card">
+<div class="sensorCard">
 
-    <div id="log"></div>
+<div class="sensorIcon">💧</div>
+
+<div class="sensorTitle">
+HUMIDITY
+</div>
+
+<div class="sensorValue"
+     id="hum">
+0%
+</div>
 
 </div>
 
-<div class="footer">
+<div class="sensorCard">
 
-KSE SCIENCE LOGGER • LIVE BLE TELEMETRY
+<div class="sensorIcon">📡</div>
+
+<div class="sensorTitle">
+PRESSURE
+</div>
+
+<div class="sensorValue"
+     id="pres">
+0
+</div>
+
+</div>
+
+<div class="sensorCard">
+
+<div class="sensorIcon">📏</div>
+
+<div class="sensorTitle">
+REL ALT
+</div>
+
+<div class="sensorValue"
+     id="alt">
+0m
+</div>
+
+</div>
+
+</div>
+
+<button class="actionBtn"
+        onclick="saveMeasurement()">
+
+SAVE MEASUREMENT
+
+</button>
+
+<button class="actionBtn"
+        onclick="exportCSV()">
+
+EXPORT CSV
+
+</button>
+
+<div class="logBox"
+     id="log">
+</div>
 
 </div>
 
@@ -526,24 +603,51 @@ KSE SCIENCE LOGGER • LIVE BLE TELEMETRY
 
 let measurements = [];
 
-let currentData = {
+let previousAltitude = 0;
 
-    temp:0,
-    hum:0,
-    pres:0,
-    alt:0,
-    base:0
-};
+function createScale(){
 
-let bleDevice = null;
+    const scale =
+        document.querySelector('.scale');
 
-let bleServer = null;
+    for(let i=-100;i<=100;i+=10){
+
+        const tick =
+            document.createElement('div');
+
+        tick.className='tick';
+
+        let y =
+            280 - (i * 2.5);
+
+        tick.style.top =
+            y + 'px';
+
+        tick.innerHTML=`
+
+        <div class="tickLine"></div>
+
+        <div class="tickValueLeft">
+            ${i}
+        </div>
+
+        <div class="tickValueRight">
+            ${i}
+        </div>
+
+        `;
+
+        scale.appendChild(tick);
+    }
+}
+
+createScale();
 
 async function connectBLE(){
 
     try{
 
-        bleDevice =
+        const device =
             await navigator.bluetooth.requestDevice({
 
                 acceptAllDevices:true,
@@ -554,16 +658,16 @@ async function connectBLE(){
 
             });
 
-        bleDevice.addEventListener(
+        device.addEventListener(
             'gattserverdisconnected',
             onDisconnected
         );
 
-        bleServer =
-            await bleDevice.gatt.connect();
+        const server =
+            await device.gatt.connect();
 
         const service =
-            await bleServer.getPrimaryService(
+            await server.getPrimaryService(
                 '4fafc201-1fb5-459e-8fcc-c5c9c331914b'
             );
 
@@ -594,10 +698,6 @@ async function connectBLE(){
 function onDisconnected(){
 
     updateBTStatus(false);
-
-    console.log(
-        'BLE disconnected'
-    );
 }
 
 function updateBTStatus(connected){
@@ -645,140 +745,110 @@ function handleData(event){
 
     let data = JSON.parse(value);
 
-    currentData = data;
-
     document.getElementById('temp').innerText =
-        data.temp + ' °C';
+        data.temp + '°C';
 
     document.getElementById('hum').innerText =
-        data.hum + ' %';
+        data.hum + '%';
 
     document.getElementById('pres').innerText =
-        data.pres + ' hPa';
+        data.pres;
 
     document.getElementById('alt').innerText =
-        data.alt + ' m';
+        data.alt + 'm';
 
     document.getElementById('basePressure').innerText =
         data.base + ' hPa';
 
-    document.getElementById('altitudeText').innerText =
-        data.alt + ' m';
+    document.getElementById('altitudeValue').innerText =
+        Math.round(data.alt);
 
-    let bar =
-        document.getElementById('altitudeBar');
+    let rate =
+        data.alt - previousAltitude;
 
-    let arrow =
-        document.getElementById('arrow');
+    previousAltitude = data.alt;
 
-    let pixels =
-        Math.min(
-            Math.abs(data.alt) * 2,
-            180
-        );
+    document.getElementById('rateValue').innerText =
+        rate.toFixed(1);
 
-    if(data.alt >= 0){
+    if(rate > 0){
 
-        bar.style.bottom = '50%';
+        document.getElementById('statusText').innerText =
+            'ASCENDING';
 
-        bar.style.top = 'auto';
+    }
 
-        bar.style.height = pixels + 'px';
+    else if(rate < 0){
 
-        bar.style.background =
-            'linear-gradient(to top,#f97316,#fb923c)';
+        document.getElementById('statusText').innerText =
+            'DESCENDING';
 
-        arrow.innerText = '⬆';
-
-        arrow.style.top =
-            (50 - (pixels / 8)) + '%';
-
-        arrow.style.color =
-            '#fb923c';
     }
 
     else{
 
-        bar.style.top = '50%';
-
-        bar.style.bottom = 'auto';
-
-        bar.style.height = pixels + 'px';
-
-        bar.style.background =
-            'linear-gradient(to bottom,#38bdf8,#2563eb)';
-
-        arrow.innerText = '⬇';
-
-        arrow.style.top =
-            (50 + (pixels / 8)) + '%';
-
-        arrow.style.color =
-            '#38bdf8';
+        document.getElementById('statusText').innerText =
+            'STABLE';
     }
+
+    let indicator =
+        document.querySelector(
+            '.altitudeIndicator'
+        );
+
+    let position =
+        50 - (data.alt * 0.45);
+
+    position =
+        Math.max(
+            8,
+            Math.min(82,position)
+        );
+
+    indicator.style.top =
+        position + '%';
 }
 
 function saveMeasurement(){
 
-    let location =
-        document.getElementById(
-            'location'
-        ).value;
-
     let entry = {
 
-        location:location,
+        alt:
+            document.getElementById(
+                'alt'
+            ).innerText,
 
-        temp:currentData.temp,
-        hum:currentData.hum,
-        pres:currentData.pres,
-        alt:currentData.alt,
-        base:currentData.base,
-
-        time:new Date()
+        time:
+            new Date()
             .toLocaleString()
-
     };
 
     measurements.push(entry);
 
-    document.getElementById(
-        'log'
-    ).innerText +=
+    document.getElementById('log').innerText +=
 
         entry.time +
-        ' | ' +
-
-        entry.location +
         ' | ALT: ' +
-
         entry.alt +
-        'm\n';
+        '\n';
 }
 
 function exportCSV(){
 
     let csv =
-'TIME,LOCATION,ALTITUDE,BASE,TEMP,HUMIDITY,PRESSURE\n';
+        'TIME,ALTITUDE\n';
 
-    measurements.forEach(m => {
+    measurements.forEach(m=>{
 
         csv +=
-
             m.time + ',' +
-            m.location + ',' +
-            m.alt + ',' +
-            m.base + ',' +
-            m.temp + ',' +
-            m.hum + ',' +
-            m.pres + '\n';
+            m.alt + '\n';
     });
 
     const blob =
         new Blob([csv],{
 
             type:'text/csv'
-
         });
 
     const a =
@@ -796,4 +866,5 @@ function exportCSV(){
 </script>
 
 </body>
+
 </html>
