@@ -7,7 +7,7 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<title>KSE Science Logger</title>
+<title>KSE Dynamic Altimeter</title>
 
 <style>
 
@@ -38,9 +38,9 @@ h1{
 
 .card{
 
-    background:rgba(15,23,42,0.55);
+    background:rgba(15,23,42,0.45);
 
-    backdrop-filter:blur(12px);
+    backdrop-filter:blur(14px);
 
     border-radius:20px;
 
@@ -65,8 +65,8 @@ button{
 
     background:linear-gradient(
         45deg,
-        rgba(37,99,235,0.9),
-        rgba(56,189,248,0.9)
+        rgba(249,115,22,0.9),
+        rgba(251,146,60,0.95)
     );
 
     color:white;
@@ -74,11 +74,6 @@ button{
     font-size:18px;
 
     cursor:pointer;
-}
-
-button:hover{
-
-    opacity:0.9;
 }
 
 input{
@@ -100,24 +95,6 @@ input{
     color:white;
 }
 
-.label{
-
-    opacity:0.7;
-
-    margin-top:10px;
-
-    font-size:13px;
-}
-
-.value{
-
-    font-size:28px;
-
-    font-weight:bold;
-
-    margin-bottom:15px;
-}
-
 .grid{
 
     display:grid;
@@ -129,7 +106,7 @@ input{
 
 .sensorCard{
 
-    background:rgba(15,23,42,0.45);
+    background:rgba(15,23,42,0.35);
 
     border-radius:15px;
 
@@ -147,69 +124,112 @@ input{
     margin-bottom:10px;
 }
 
-#log{
+.label{
 
-    white-space:pre-wrap;
+    opacity:0.7;
 
     font-size:13px;
+
+    margin-bottom:5px;
+}
+
+.value{
+
+    font-size:28px;
+
+    font-weight:bold;
 }
 
 .altimeterContainer{
 
+    position:relative;
+
     width:100%;
 
-    height:250px;
+    height:400px;
 
-    background:rgba(15,23,42,0.5);
+    background:rgba(15,23,42,0.35);
 
     border-radius:20px;
-
-    position:relative;
 
     overflow:hidden;
 
     margin-top:15px;
 }
 
+.centerLine{
+
+    position:absolute;
+
+    top:50%;
+
+    width:100%;
+
+    height:2px;
+
+    background:rgba(255,255,255,0.15);
+
+    z-index:2;
+}
+
 .altitudeBar{
 
     position:absolute;
 
-    bottom:0;
+    left:50%;
 
-    width:100%;
+    transform:translateX(-50%);
 
-    height:0%;
+    width:70%;
 
-    background:linear-gradient(
-        to top,
-        rgba(37,99,235,0.85),
-        rgba(56,189,248,0.95)
-    );
+    bottom:50%;
 
-    transition:height 0.5s;
+    height:0px;
+
+    border-radius:20px;
+
+    transition:all 0.25s ease;
+}
+
+.arrow{
+
+    position:absolute;
+
+    left:20px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    font-size:45px;
+
+    transition:all 0.25s ease;
+
+    z-index:3;
 }
 
 .altitudeText{
 
     position:absolute;
 
-    top:10px;
+    top:15px;
 
     width:100%;
 
     text-align:center;
 
-    font-size:24px;
+    font-size:32px;
 
     font-weight:bold;
 
-    text-shadow:0 0 10px rgba(0,0,0,0.5);
+    z-index:3;
+
+    text-shadow:0 0 15px rgba(0,0,0,0.5);
 }
 
 .measureBox{
 
-    background:rgba(15,23,42,0.45);
+    background:rgba(15,23,42,0.35);
 
     border-radius:15px;
 
@@ -251,7 +271,7 @@ input{
 
 <body>
 
-<h1>🌍 KSE Science Logger</h1>
+<h1>🌍 KSE Dynamic Altimeter</h1>
 
 <div class="card">
 
@@ -333,13 +353,13 @@ input{
             <div class="icon">📏</div>
 
             <div class="label">
-                ALTITUDE
+                RELATIVE ALTITUDE
             </div>
 
             <div class="value"
                  id="alt">
 
-                 -- m
+                 0 m
 
             </div>
 
@@ -352,10 +372,19 @@ input{
 <div class="card">
 
     <div class="label">
-        📈 ALTITUDE PROGRESS
+        📈 LIVE ALTITUDE TRACKER
     </div>
 
     <div class="altimeterContainer">
+
+        <div class="centerLine"></div>
+
+        <div class="arrow"
+             id="arrow">
+
+             ➜
+
+        </div>
 
         <div class="altitudeBar"
              id="altitudeBar">
@@ -375,28 +404,17 @@ input{
 <div class="card">
 
     <div class="label">
-        🧪 MEASUREMENT SESSION
+        🧪 BASE REFERENCE
     </div>
 
     <div class="measureBox">
 
         <div class="measureTitle">
-            BASE MARKED
+            BASE PRESSURE
         </div>
 
         <div class="measureValue"
              id="basePressure">
-
-             -- hPa
-
-        </div>
-
-        <div class="measureTitle">
-            TOP MARKED
-        </div>
-
-        <div class="measureValue"
-             id="topPressure">
 
              -- hPa
 
@@ -430,7 +448,7 @@ input{
 
 <div class="footer">
 
-KSE SCIENCE LOGGER • ESP32 BLE
+KSE SCIENCE LOGGER • LIVE BLE TELEMETRY
 
 </div>
 
@@ -444,9 +462,10 @@ let currentData = {
     hum:0,
     pres:0,
     alt:0,
-    base:0,
-    top:0
+    base:0
 };
+
+let previousAltitude = 0;
 
 async function connectBLE(){
 
@@ -492,7 +511,6 @@ async function connectBLE(){
         alert(
             'Connection Error: ' + error
         );
-
     }
 }
 
@@ -522,21 +540,63 @@ function handleData(event){
     document.getElementById('basePressure').innerText =
         data.base + ' hPa';
 
-    document.getElementById('topPressure').innerText =
-        data.top + ' hPa';
-
     document.getElementById('altitudeText').innerText =
         data.alt + ' m';
 
-    let percent =
+    let bar =
+        document.getElementById('altitudeBar');
+
+    let arrow =
+        document.getElementById('arrow');
+
+    let pixels =
         Math.min(
-            data.alt / 150 * 100,
-            100
+            Math.abs(data.alt) * 2,
+            180
         );
 
-    document.getElementById(
-        'altitudeBar'
-    ).style.height = percent + '%';
+    if(data.alt >= 0){
+
+        bar.style.bottom = '50%';
+
+        bar.style.top = 'auto';
+
+        bar.style.height = pixels + 'px';
+
+        bar.style.background =
+            'linear-gradient(to top,#f97316,#fb923c)';
+
+        arrow.innerText = '⬆';
+
+        arrow.style.top =
+            (50 - (pixels / 8)) + '%';
+
+        arrow.style.color =
+            '#fb923c';
+
+    }
+
+    else{
+
+        bar.style.top = '50%';
+
+        bar.style.bottom = 'auto';
+
+        bar.style.height = pixels + 'px';
+
+        bar.style.background =
+            'linear-gradient(to bottom,#38bdf8,#2563eb)';
+
+        arrow.innerText = '⬇';
+
+        arrow.style.top =
+            (50 + (pixels / 8)) + '%';
+
+        arrow.style.color =
+            '#38bdf8';
+    }
+
+    previousAltitude = data.alt;
 }
 
 function saveMeasurement(){
@@ -555,7 +615,6 @@ function saveMeasurement(){
         pres:currentData.pres,
         alt:currentData.alt,
         base:currentData.base,
-        top:currentData.top,
 
         time:new Date()
             .toLocaleString()
@@ -581,7 +640,7 @@ function saveMeasurement(){
 function exportCSV(){
 
     let csv =
-'TIME,LOCATION,ALTITUDE,BASE,TOP,TEMP,HUMIDITY,PRESSURE\n';
+'TIME,LOCATION,ALTITUDE,BASE,TEMP,HUMIDITY,PRESSURE\n';
 
     measurements.forEach(m => {
 
@@ -591,7 +650,6 @@ function exportCSV(){
             m.location + ',' +
             m.alt + ',' +
             m.base + ',' +
-            m.top + ',' +
             m.temp + ',' +
             m.hum + ',' +
             m.pres + '\n';
