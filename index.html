@@ -1,449 +1,333 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KSE Aviation Altimeter</title>
 
 <style>
-
 body{
-
-    margin:0;
-    padding:15px;
-
-    font-family:Arial,sans-serif;
-
-    background-image:url('logo.png');
-    background-size:cover;
-    background-position:center;
-    background-attachment:fixed;
-
-    background-color:#020617;
-
-    color:white;
+margin:0;
+padding:15px;
+font-family:Arial,sans-serif;
+background-image:url('logo.png');
+background-size:cover;
+background-position:center;
+background-attachment:fixed;
+background-color:#020617;
+color:white;
 }
 
 .mainCard{
-
-    background:rgba(10,15,35,0.55);
-
-    backdrop-filter:blur(18px);
-
-    border-radius:30px;
-
-    padding:20px;
-
-    border:1px solid rgba(255,255,255,0.08);
-
-    box-shadow:0 0 35px rgba(0,0,0,0.45);
-
-    max-width:900px;
-
-    margin:auto;
+background:rgba(10,15,35,0.55);
+backdrop-filter:blur(18px);
+border-radius:30px;
+padding:20px;
+border:1px solid rgba(255,255,255,0.08);
+box-shadow:0 0 35px rgba(0,0,0,0.45);
+max-width:900px;
+margin:auto;
 }
 
 h1{
-
-    text-align:center;
-
-    margin-bottom:20px;
-
-    font-size:34px;
-
-    letter-spacing:2px;
+text-align:center;
+margin-bottom:20px;
+font-size:34px;
+letter-spacing:2px;
 }
 
 #connectBtn{
-
-    width:100%;
-
-    padding:15px;
-
-    border:none;
-
-    border-radius:18px;
-
-    font-size:16px;
-
-    cursor:pointer;
-
-    transition:all 0.3s ease;
-
-    background:rgba(255,255,255,0.08);
-
-    color:rgba(255,255,255,0.6);
-
-    margin-bottom:20px;
+width:100%;
+padding:15px;
+border:none;
+border-radius:18px;
+font-size:16px;
+cursor:pointer;
+transition:all 0.3s ease;
+background:rgba(255,255,255,0.08);
+color:rgba(255,255,255,0.6);
+margin-bottom:20px;
 }
 
 .connected{
-
-    background:linear-gradient(
-        45deg,
-        rgba(37,99,235,0.95),
-        rgba(56,189,248,0.95)
-    ) !important;
-
-    color:white !important;
-
-    box-shadow:0 0 20px rgba(56,189,248,0.45);
+background:linear-gradient(45deg,rgba(37,99,235,0.95),rgba(56,189,248,0.95)) !important;
+color:white !important;
+box-shadow:0 0 20px rgba(56,189,248,0.45);
 }
 
 .disconnected{
-
-    background:rgba(255,255,255,0.05) !important;
-
-    color:rgba(255,255,255,0.5) !important;
+background:rgba(255,255,255,0.05) !important;
+color:rgba(255,255,255,0.5) !important;
 }
 
 .instrumentPanel{
-
-    position:relative;
-
-    width:100%;
-
-    height:520px;
-
-    border-radius:35px;
-
-    background:radial-gradient(
-        circle,
-        rgba(5,8,20,0.95),
-        rgba(1,2,8,0.98)
-    );
-
-    overflow:hidden;
-
-    border:2px solid rgba(255,255,255,0.06);
-
-    box-shadow:
-        inset 0 0 60px rgba(0,0,0,0.9),
-        0 0 40px rgba(0,0,0,0.5);
+position:relative;
+width:100%;
+height:520px;
+border-radius:35px;
+background:radial-gradient(circle,rgba(5,8,20,0.95),rgba(1,2,8,0.98));
+overflow:hidden;
+border:2px solid rgba(255,255,255,0.06);
+box-shadow:inset 0 0 60px rgba(0,0,0,0.9),0 0 40px rgba(0,0,0,0.5);
 }
 
 .scale{
-
-    position:absolute;
-
-    left:50%;
-
-    top:50%;
-
-    transform:translate(-50%,-50%);
-
-    width:90px;
-
-    height:430px;
+position:absolute;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+width:90px;
+height:430px;
 }
 
 .centerLine{
-
-    position:absolute;
-
-    left:50%;
-
-    top:0;
-
-    transform:translateX(-50%);
-
-    width:8px;
-
-    height:100%;
-
-    background:linear-gradient(
-        to bottom,
-        #fb923c,
-        #facc15,
-        #38bdf8,
-        #2563eb
-    );
-
-    border-radius:20px;
+position:absolute;
+left:50%;
+top:0;
+transform:translateX(-50%);
+width:8px;
+height:100%;
+background:linear-gradient(to bottom,#fb923c,#facc15,#38bdf8,#2563eb);
+border-radius:20px;
 }
 
 .tick{
-
-    position:absolute;
-
-    width:100%;
+position:absolute;
+width:100%;
 }
 
 .tickLine{
-
-    position:absolute;
-
-    left:50%;
-
-    transform:translateX(-50%);
-
-    width:40px;
-
-    height:2px;
-
-    background:white;
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+width:40px;
+height:2px;
+background:white;
 }
 
 .tickValueLeft{
-
-    position:absolute;
-
-    left:0;
-
-    top:-8px;
-
-    font-size:14px;
-
-    font-weight:bold;
+position:absolute;
+left:0;
+top:-8px;
+font-size:14px;
+font-weight:bold;
 }
 
 .tickValueRight{
-
-    position:absolute;
-
-    right:0;
-
-    top:-8px;
-
-    font-size:14px;
-
-    font-weight:bold;
+position:absolute;
+right:0;
+top:-8px;
+font-size:14px;
+font-weight:bold;
 }
 
 .altitudeIndicator{
-
-    position:absolute;
-
-    left:15px;
-
-    top:50%;
-
-    transform:translateY(-50%);
-
-    background:black;
-
-    border:3px solid #00e5ff;
-
-    border-radius:18px;
-
-    width:110px;
-
-    height:70px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-size:42px;
-
-    font-weight:bold;
-
-    box-shadow:0 0 20px rgba(0,229,255,0.5);
-
-    z-index:5;
+position:absolute;
+left:15px;
+top:50%;
+transform:translateY(-50%);
+background:black;
+border:3px solid #00e5ff;
+border-radius:18px;
+width:110px;
+height:70px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:42px;
+font-weight:bold;
+box-shadow:0 0 20px rgba(0,229,255,0.5);
+z-index:5;
 }
 
 .altitudeArrow{
-
-    position:absolute;
-
-    right:-18px;
-
-    width:0;
-    height:0;
-
-    border-top:10px solid transparent;
-    border-bottom:10px solid transparent;
-    border-left:18px solid white;
+position:absolute;
+right:-18px;
+width:0;
+height:0;
+border-top:10px solid transparent;
+border-bottom:10px solid transparent;
+border-left:18px solid white;
 }
 
 .rateIndicator{
-
-    position:absolute;
-
-    right:15px;
-
-    top:50%;
-
-    transform:translateY(-50%);
-
-    background:black;
-
-    border:3px solid white;
-
-    border-radius:18px;
-
-    width:110px;
-
-    height:70px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-size:32px;
-
-    font-weight:bold;
-
-    z-index:5;
+position:absolute;
+right:15px;
+top:50%;
+transform:translateY(-50%);
+background:black;
+border:3px solid white;
+border-radius:18px;
+width:110px;
+height:70px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:32px;
+font-weight:bold;
+z-index:5;
 }
 
 .rateArrow{
-
-    position:absolute;
-
-    left:-18px;
-
-    width:0;
-    height:0;
-
-    border-top:10px solid transparent;
-    border-bottom:10px solid transparent;
-    border-right:18px solid white;
+position:absolute;
+left:-18px;
+width:0;
+height:0;
+border-top:10px solid transparent;
+border-bottom:10px solid transparent;
+border-right:18px solid white;
 }
 
 .infoBox{
-
-    position:absolute;
-
-    color:white;
+position:absolute;
+color:white;
 }
 
 .refBox{
-
-    left:15px;
-
-    bottom:25px;
+left:15px;
+bottom:25px;
 }
 
 .statusBox{
-
-    right:15px;
-
-    bottom:25px;
-
-    text-align:right;
+right:15px;
+bottom:25px;
+text-align:right;
 }
 
 .label{
-
-    color:#38bdf8;
-
-    font-size:18px;
-
-    font-weight:bold;
+color:#38bdf8;
+font-size:18px;
+font-weight:bold;
 }
 
 .small{
-
-    font-size:14px;
-
-    opacity:0.8;
+font-size:14px;
+opacity:0.8;
 }
 
 .bottomGrid{
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:15px;
-
-    margin-top:20px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-top:20px;
 }
 
 .sensorCard{
-
-    background:rgba(15,23,42,0.45);
-
-    border-radius:20px;
-
-    padding:15px;
-
-    text-align:center;
-
-    border:1px solid rgba(255,255,255,0.05);
+background:rgba(15,23,42,0.45);
+border-radius:20px;
+padding:15px;
+text-align:center;
+border:1px solid rgba(255,255,255,0.05);
 }
 
 .sensorIcon{
-
-    font-size:32px;
-
-    margin-bottom:8px;
+font-size:32px;
+margin-bottom:8px;
 }
 
 .sensorTitle{
-
-    font-size:14px;
-
-    opacity:0.7;
+font-size:14px;
+opacity:0.7;
 }
 
 .sensorValue{
-
-    font-size:28px;
-
-    font-weight:bold;
-
-    margin-top:6px;
+font-size:28px;
+font-weight:bold;
+margin-top:6px;
 }
 
 .actionBtn{
-
-    width:100%;
-
-    padding:15px;
-
-    border:none;
-
-    border-radius:18px;
-
-    font-size:16px;
-
-    cursor:pointer;
-
-    transition:all 0.3s ease;
-
-    background:linear-gradient(
-        45deg,
-        rgba(37,99,235,0.95),
-        rgba(56,189,248,0.95)
-    );
-
-    color:white;
-
-    margin-top:15px;
-
-    box-shadow:0 0 20px rgba(56,189,248,0.35);
+width:100%;
+padding:15px;
+border:none;
+border-radius:18px;
+font-size:16px;
+cursor:pointer;
+transition:all 0.3s ease;
+background:linear-gradient(45deg,rgba(37,99,235,0.95),rgba(56,189,248,0.95));
+color:white;
+margin-top:15px;
+box-shadow:0 0 20px rgba(56,189,248,0.35);
 }
 
 .logBox{
+margin-top:20px;
+background:rgba(0,0,0,0.35);
+border-radius:20px;
+padding:15px;
+min-height:80px;
+white-space:pre-wrap;
+font-size:13px;
+}
 
-    margin-top:20px;
+/* ------------------------------------------------ */
+/* 📱 OPTIMIZACIÓN RESPONSIVE PARA SMARTPHONE */
+/* ------------------------------------------------ */
 
-    background:rgba(0,0,0,0.35);
+@media (max-width: 600px) {
 
-    border-radius:20px;
+body{
+padding:8px;
+}
 
-    padding:15px;
+.mainCard{
+width:100%;
+margin:0 auto;
+padding:15px;
+border-radius:20px;
+}
 
-    min-height:80px;
+h1{
+font-size:26px;
+letter-spacing:1px;
+}
 
-    white-space:pre-wrap;
+.instrumentPanel{
+height:420px;
+border-radius:25px;
+}
 
-    font-size:13px;
+.scale{
+width:70px;
+height:350px;
+}
+
+.tickValueLeft,
+.tickValueRight{
+font-size:11px;
+}
+
+.altitudeIndicator,
+.rateIndicator{
+width:90px;
+height:60px;
+font-size:32px;
+}
+
+.bottomGrid{
+grid-template-columns:1fr;
+gap:10px;
+}
+
+.sensorCard{
+padding:12px;
+}
+
+.sensorValue{
+font-size:22px;
+}
+
+.actionBtn{
+font-size:15px;
+padding:12px;
+}
+
+.logBox{
+font-size:12px;
+}
 }
 
 </style>
-
 </head>
 
 <body>
@@ -452,66 +336,32 @@ h1{
 
 <h1>ALTITUDE TRACKER</h1>
 
-<button id="connectBtn"
-        class="disconnected"
-        onclick="connectBLE()">
-
-CONNECT DEVICE
-
-</button>
+<button id="connectBtn" class="disconnected" onclick="connectBLE()">CONNECT DEVICE</button>
 
 <div class="instrumentPanel">
 
 <div class="scale">
-
 <div class="centerLine"></div>
-
 </div>
 
 <div class="altitudeIndicator">
-
-<div id="altitudeValue">
-0
-</div>
-
+<div id="altitudeValue">0</div>
 <div class="altitudeArrow"></div>
-
 </div>
 
 <div class="rateIndicator">
-
-<div id="rateValue">
-0
-</div>
-
+<div id="rateValue">0</div>
 <div class="rateArrow"></div>
-
 </div>
 
 <div class="infoBox refBox">
-
-<div class="label">
-REFERENCE
-</div>
-
-<div class="small"
-     id="basePressure">
-1008 hPa
-</div>
-
+<div class="label">REFERENCE</div>
+<div class="small" id="basePressure">1008 hPa</div>
 </div>
 
 <div class="infoBox statusBox">
-
-<div class="label">
-STATUS
-</div>
-
-<div class="small"
-     id="statusText">
-STABLE
-</div>
-
+<div class="label">STATUS</div>
+<div class="small" id="statusText">STABLE</div>
 </div>
 
 </div>
@@ -519,353 +369,149 @@ STABLE
 <div class="bottomGrid">
 
 <div class="sensorCard">
-
 <div class="sensorIcon">🌡️</div>
-
-<div class="sensorTitle">
-TEMP
-</div>
-
-<div class="sensorValue"
-     id="temp">
-0°C
-</div>
-
+<div class="sensorTitle">TEMP</div>
+<div class="sensorValue" id="temp">0°C</div>
 </div>
 
 <div class="sensorCard">
-
 <div class="sensorIcon">💧</div>
-
-<div class="sensorTitle">
-HUMIDITY
-</div>
-
-<div class="sensorValue"
-     id="hum">
-0%
-</div>
-
+<div class="sensorTitle">HUMIDITY</div>
+<div class="sensorValue" id="hum">0%</div>
 </div>
 
 <div class="sensorCard">
-
 <div class="sensorIcon">📡</div>
-
-<div class="sensorTitle">
-PRESSURE
-</div>
-
-<div class="sensorValue"
-     id="pres">
-0
-</div>
-
+<div class="sensorTitle">PRESSURE</div>
+<div class="sensorValue" id="pres">0</div>
 </div>
 
 <div class="sensorCard">
-
 <div class="sensorIcon">📏</div>
-
-<div class="sensorTitle">
-REL ALT
-</div>
-
-<div class="sensorValue"
-     id="alt">
-0m
+<div class="sensorTitle">REL ALT</div>
+<div class="sensorValue" id="alt">0m</div>
 </div>
 
 </div>
 
-</div>
+<button class="actionBtn" onclick="saveMeasurement()">SAVE MEASUREMENT</button>
+<button class="actionBtn" onclick="exportCSV()">EXPORT CSV</button>
 
-<button class="actionBtn"
-        onclick="saveMeasurement()">
-
-SAVE MEASUREMENT
-
-</button>
-
-<button class="actionBtn"
-        onclick="exportCSV()">
-
-EXPORT CSV
-
-</button>
-
-<div class="logBox"
-     id="log">
-</div>
+<div class="logBox" id="log"></div>
 
 </div>
 
 <script>
-
 let measurements = [];
-
 let previousAltitude = 0;
 
 function createScale(){
-
-    const scale =
-        document.querySelector('.scale');
-
-    for(let i=-100;i<=100;i+=10){
-
-        const tick =
-            document.createElement('div');
-
-        tick.className='tick';
-
-        let y =
-            215 - (i * 2);
-
-        tick.style.top =
-            y + 'px';
-
-        tick.innerHTML=`
-
-        <div class="tickLine"></div>
-
-        <div class="tickValueLeft">
-            ${i}
-        </div>
-
-        <div class="tickValueRight">
-            ${i}
-        </div>
-
-        `;
-
-        scale.appendChild(tick);
-    }
+const scale = document.querySelector('.scale');
+for(let i=-100;i<=100;i+=10){
+const tick = document.createElement('div');
+tick.className='tick';
+let y = 215 - (i * 2);
+tick.style.top = y + 'px';
+tick.innerHTML=`
+<div class="tickLine"></div>
+<div class="tickValueLeft">${i}</div>
+<div class="tickValueRight">${i}</div>
+`;
+scale.appendChild(tick);
 }
-
+}
 createScale();
 
 async function connectBLE(){
-
-    try{
-
-        const device =
-            await navigator.bluetooth.requestDevice({
-
-                acceptAllDevices:true,
-
-                optionalServices:[
-                    '4fafc201-1fb5-459e-8fcc-c5c9c331914b'
-                ]
-
-            });
-
-        device.addEventListener(
-            'gattserverdisconnected',
-            onDisconnected
-        );
-
-        const server =
-            await device.gatt.connect();
-
-        const service =
-            await server.getPrimaryService(
-                '4fafc201-1fb5-459e-8fcc-c5c9c331914b'
-            );
-
-        const characteristic =
-            await service.getCharacteristic(
-                'beb5483e-36e1-4688-b7f5-ea07361b26a8'
-            );
-
-        await characteristic.startNotifications();
-
-        characteristic.addEventListener(
-            'characteristicvaluechanged',
-            handleData
-        );
-
-        updateBTStatus(true);
-
-    }
-
-    catch(error){
-
-        console.log(error);
-
-        updateBTStatus(false);
-    }
+try{
+const device = await navigator.bluetooth.requestDevice({
+acceptAllDevices:true,
+optionalServices:['4fafc201-1fb5-459e-8fcc-c5c9c331914b']
+});
+device.addEventListener('gattserverdisconnected', onDisconnected);
+const server = await device.gatt.connect();
+const service = await server.getPrimaryService('4fafc201-1fb5-459e-8fcc-c5c9c331914b');
+const characteristic = await service.getCharacteristic('beb5483e-36e1-4688-b7f5-ea07361b26a8');
+await characteristic.startNotifications();
+characteristic.addEventListener('characteristicvaluechanged', handleData);
+updateBTStatus(true);
+}
+catch(error){
+console.log(error);
+updateBTStatus(false);
+}
 }
 
 function onDisconnected(){
-
-    updateBTStatus(false);
+updateBTStatus(false);
 }
 
 function updateBTStatus(connected){
-
-    const btn =
-        document.getElementById(
-            'connectBtn'
-        );
-
-    if(connected){
-
-        btn.innerText =
-            'BLUETOOTH CONNECTED';
-
-        btn.classList.remove(
-            'disconnected'
-        );
-
-        btn.classList.add(
-            'connected'
-        );
-    }
-
-    else{
-
-        btn.innerText =
-            'CONNECT DEVICE';
-
-        btn.classList.remove(
-            'connected'
-        );
-
-        btn.classList.add(
-            'disconnected'
-        );
-    }
+const btn = document.getElementById('connectBtn');
+if(connected){
+btn.innerText = 'BLUETOOTH CONNECTED';
+btn.classList.remove('disconnected');
+btn.classList.add('connected');
+}
+else{
+btn.innerText = 'CONNECT DEVICE';
+btn.classList.remove('connected');
+btn.classList.add('disconnected');
+}
 }
 
 function handleData(event){
+let value = new TextDecoder().decode(event.target.value);
+let data = JSON.parse(value);
 
-    let value =
-        new TextDecoder().decode(
-            event.target.value
-        );
+document.getElementById('temp').innerText = data.temp + '°C';
+document.getElementById('hum').innerText = data.hum + '%';
+document.getElementById('pres').innerText = data.pres;
+document.getElementById('alt').innerText = data.alt + 'm';
+document.getElementById('basePressure').innerText = data.base + ' hPa';
+document.getElementById('altitudeValue').innerText = Math.round(data.alt);
 
-    let data = JSON.parse(value);
+let rate = data.alt - previousAltitude;
+previousAltitude = data.alt;
+document.getElementById('rateValue').innerText = rate.toFixed(1);
 
-    document.getElementById('temp').innerText =
-        data.temp + '°C';
+if(rate > 0){
+document.getElementById('statusText').innerText = 'ASCENDING';
+}
+else if(rate < 0){
+document.getElementById('statusText').innerText = 'DESCENDING';
+}
+else{
+document.getElementById('statusText').innerText = 'STABLE';
+}
 
-    document.getElementById('hum').innerText =
-        data.hum + '%';
-
-    document.getElementById('pres').innerText =
-        data.pres;
-
-    document.getElementById('alt').innerText =
-        data.alt + 'm';
-
-    document.getElementById('basePressure').innerText =
-        data.base + ' hPa';
-
-    document.getElementById('altitudeValue').innerText =
-        Math.round(data.alt);
-
-    let rate =
-        data.alt - previousAltitude;
-
-    previousAltitude = data.alt;
-
-    document.getElementById('rateValue').innerText =
-        rate.toFixed(1);
-
-    if(rate > 0){
-
-        document.getElementById('statusText').innerText =
-            'ASCENDING';
-
-    }
-
-    else if(rate < 0){
-
-        document.getElementById('statusText').innerText =
-            'DESCENDING';
-
-    }
-
-    else{
-
-        document.getElementById('statusText').innerText =
-            'STABLE';
-    }
-
-    let indicator =
-        document.querySelector(
-            '.altitudeIndicator'
-        );
-
-    let position =
-        50 - (data.alt * 0.4);
-
-    position =
-        Math.max(
-            12,
-            Math.min(88,position)
-        );
-
-    indicator.style.top =
-        position + '%';
+let indicator = document.querySelector('.altitudeIndicator');
+let position = 50 - (data.alt * 0.4);
+position = Math.max(12, Math.min(88, position));
+indicator.style.top = position + '%';
 }
 
 function saveMeasurement(){
-
-    let entry = {
-
-        alt:
-            document.getElementById(
-                'alt'
-            ).innerText,
-
-        time:
-            new Date()
-            .toLocaleString()
-    };
-
-    measurements.push(entry);
-
-    document.getElementById('log').innerText +=
-
-        entry.time +
-        ' | ALT: ' +
-        entry.alt +
-        '\n';
+let entry = {
+alt: document.getElementById('alt').innerText,
+time: new Date().toLocaleString()
+};
+measurements.push(entry);
+document.getElementById('log').innerText += entry.time + ' | ALT: ' + entry.alt + '\n';
 }
 
 function exportCSV(){
-
-    let csv =
-        'TIME,ALTITUDE\n';
-
-    measurements.forEach(m=>{
-
-        csv +=
-            m.time + ',' +
-            m.alt + '\n';
-    });
-
-    const blob =
-        new Blob([csv],{
-
-            type:'text/csv'
-        });
-
-    const a =
-        document.createElement('a');
-
-    a.href =
-        URL.createObjectURL(blob);
-
-    a.download =
-        'kse_measurements.csv';
-
-    a.click();
+let csv = 'TIME,ALTITUDE\n';
+measurements.forEach(m=>{
+csv += m.time + ',' + m.alt + '\n';
+});
+const blob = new Blob([csv],{type:'text/csv'});
+const a = document.createElement('a');
+a.href = URL.createObjectURL(blob);
+a.download = 'kse_measurements.csv';
+a.click();
 }
-
 </script>
 
 </body>
-
 </html>
