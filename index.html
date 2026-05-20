@@ -6,6 +6,7 @@
 <title>KSE Aviation Altimeter</title>
 
 <style>
+
 body{
 margin:0;
 padding:15px;
@@ -19,7 +20,7 @@ color:white;
 }
 
 .mainCard{
-background:rgba(10,15,35,0.55);
+background:rgba(10,15,35,0.05);
 backdrop-filter:blur(18px);
 border-radius:30px;
 padding:20px;
@@ -58,6 +59,19 @@ box-shadow:0 0 20px rgba(56,189,248,0.45);
 .disconnected{
 background:rgba(255,255,255,0.05) !important;
 color:rgba(255,255,255,0.5) !important;
+}
+
+.locationInput{
+width:100%;
+padding:14px;
+border:none;
+border-radius:15px;
+background:rgba(255,255,255,0.08);
+color:white;
+font-size:15px;
+box-sizing:border-box;
+outline:none;
+margin-bottom:20px;
 }
 
 .instrumentPanel{
@@ -213,7 +227,7 @@ margin-top:20px;
 }
 
 .sensorCard{
-background:rgba(15,23,42,0.45);
+background:rgba(15,23,42,0.05);
 border-radius:20px;
 padding:15px;
 text-align:center;
@@ -260,9 +274,7 @@ white-space:pre-wrap;
 font-size:13px;
 }
 
-/* ------------------------------------------------ */
-/* 📱 OPTIMIZACIÓN RESPONSIVE PARA SMARTPHONE */
-/* ------------------------------------------------ */
+/* MOBILE */
 
 @media (max-width: 600px) {
 
@@ -325,6 +337,7 @@ padding:12px;
 .logBox{
 font-size:12px;
 }
+
 }
 
 </style>
@@ -336,7 +349,19 @@ font-size:12px;
 
 <h1>ALTITUDE TRACKER</h1>
 
-<button id="connectBtn" class="disconnected" onclick="connectBLE()">CONNECT DEVICE</button>
+<input
+type="text"
+id="locationInput"
+class="locationInput"
+placeholder="Enter Location...">
+
+<button id="connectBtn"
+class="disconnected"
+onclick="connectBLE()">
+
+CONNECT DEVICE
+
+</button>
 
 <div class="instrumentPanel">
 
@@ -394,123 +419,301 @@ font-size:12px;
 
 </div>
 
-<button class="actionBtn" onclick="saveMeasurement()">SAVE MEASUREMENT</button>
-<button class="actionBtn" onclick="exportCSV()">EXPORT CSV</button>
+<button class="actionBtn"
+onclick="saveMeasurement()">
+
+SAVE MEASUREMENT
+
+</button>
+
+<button class="actionBtn"
+onclick="exportCSV()">
+
+EXPORT CSV
+
+</button>
 
 <div class="logBox" id="log"></div>
 
 </div>
 
 <script>
+
 let measurements = [];
 let previousAltitude = 0;
 
 function createScale(){
+
 const scale = document.querySelector('.scale');
+
 for(let i=-100;i<=100;i+=10){
+
 const tick = document.createElement('div');
+
 tick.className='tick';
+
 let y = 215 - (i * 2);
+
 tick.style.top = y + 'px';
+
 tick.innerHTML=`
+
 <div class="tickLine"></div>
+
 <div class="tickValueLeft">${i}</div>
+
 <div class="tickValueRight">${i}</div>
+
 `;
+
 scale.appendChild(tick);
+
 }
+
 }
+
 createScale();
 
 async function connectBLE(){
+
 try{
-const device = await navigator.bluetooth.requestDevice({
+
+const device =
+await navigator.bluetooth.requestDevice({
+
 acceptAllDevices:true,
-optionalServices:['4fafc201-1fb5-459e-8fcc-c5c9c331914b']
+
+optionalServices:[
+'4fafc201-1fb5-459e-8fcc-c5c9c331914b'
+]
+
 });
-device.addEventListener('gattserverdisconnected', onDisconnected);
-const server = await device.gatt.connect();
-const service = await server.getPrimaryService('4fafc201-1fb5-459e-8fcc-c5c9c331914b');
-const characteristic = await service.getCharacteristic('beb5483e-36e1-4688-b7f5-ea07361b26a8');
+
+device.addEventListener(
+'gattserverdisconnected',
+onDisconnected
+);
+
+const server =
+await device.gatt.connect();
+
+const service =
+await server.getPrimaryService(
+'4fafc201-1fb5-459e-8fcc-c5c9c331914b'
+);
+
+const characteristic =
+await service.getCharacteristic(
+'beb5483e-36e1-4688-b7f5-ea07361b26a8'
+);
+
 await characteristic.startNotifications();
-characteristic.addEventListener('characteristicvaluechanged', handleData);
+
+characteristic.addEventListener(
+'characteristicvaluechanged',
+handleData
+);
+
 updateBTStatus(true);
+
 }
+
 catch(error){
+
 console.log(error);
+
 updateBTStatus(false);
+
 }
+
 }
 
 function onDisconnected(){
+
 updateBTStatus(false);
+
 }
 
 function updateBTStatus(connected){
-const btn = document.getElementById('connectBtn');
+
+const btn =
+document.getElementById('connectBtn');
+
 if(connected){
-btn.innerText = 'BLUETOOTH CONNECTED';
+
+btn.innerText =
+'BLUETOOTH CONNECTED';
+
 btn.classList.remove('disconnected');
+
 btn.classList.add('connected');
+
 }
+
 else{
-btn.innerText = 'CONNECT DEVICE';
+
+btn.innerText =
+'CONNECT DEVICE';
+
 btn.classList.remove('connected');
+
 btn.classList.add('disconnected');
+
 }
+
 }
 
 function handleData(event){
-let value = new TextDecoder().decode(event.target.value);
+
+let value =
+new TextDecoder().decode(
+event.target.value
+);
+
 let data = JSON.parse(value);
 
-document.getElementById('temp').innerText = data.temp + '°C';
-document.getElementById('hum').innerText = data.hum + '%';
-document.getElementById('pres').innerText = data.pres;
-document.getElementById('alt').innerText = data.alt + 'm';
-document.getElementById('basePressure').innerText = data.base + ' hPa';
-document.getElementById('altitudeValue').innerText = Math.round(data.alt);
+document.getElementById('temp').innerText =
+data.temp + '°C';
 
-let rate = data.alt - previousAltitude;
+document.getElementById('hum').innerText =
+data.hum + '%';
+
+document.getElementById('pres').innerText =
+data.pres;
+
+document.getElementById('alt').innerText =
+data.alt + 'm';
+
+document.getElementById('basePressure').innerText =
+data.base + ' hPa';
+
+document.getElementById('altitudeValue').innerText =
+Math.round(data.alt);
+
+let rate =
+data.alt - previousAltitude;
+
 previousAltitude = data.alt;
-document.getElementById('rateValue').innerText = rate.toFixed(1);
+
+document.getElementById('rateValue').innerText =
+rate.toFixed(1);
 
 if(rate > 0){
-document.getElementById('statusText').innerText = 'ASCENDING';
-}
-else if(rate < 0){
-document.getElementById('statusText').innerText = 'DESCENDING';
-}
-else{
-document.getElementById('statusText').innerText = 'STABLE';
+
+document.getElementById('statusText').innerText =
+'ASCENDING';
+
 }
 
-let indicator = document.querySelector('.altitudeIndicator');
-let position = 50 - (data.alt * 0.4);
-position = Math.max(12, Math.min(88, position));
-indicator.style.top = position + '%';
+else if(rate < 0){
+
+document.getElementById('statusText').innerText =
+'DESCENDING';
+
+}
+
+else{
+
+document.getElementById('statusText').innerText =
+'STABLE';
+
+}
+
+let indicator =
+document.querySelector(
+'.altitudeIndicator'
+);
+
+let position =
+50 - (data.alt * 0.4);
+
+position =
+Math.max(
+12,
+Math.min(88, position)
+);
+
+indicator.style.top =
+position + '%';
+
 }
 
 function saveMeasurement(){
+
+let location =
+document.getElementById(
+'locationInput'
+).value;
+
+if(location.trim()===""){
+
+location = "Unknown Location";
+
+}
+
 let entry = {
-alt: document.getElementById('alt').innerText,
-time: new Date().toLocaleString()
+
+location:location,
+
+alt:
+document.getElementById(
+'alt'
+).innerText,
+
+time:
+new Date().toLocaleString()
+
 };
+
 measurements.push(entry);
-document.getElementById('log').innerText += entry.time + ' | ALT: ' + entry.alt + '\n';
+
+document.getElementById(
+'log'
+).innerText +=
+
+entry.time +
+' | ' +
+entry.location +
+' | ALT: ' +
+entry.alt +
+'\n';
+
 }
 
 function exportCSV(){
-let csv = 'TIME,ALTITUDE\n';
+
+let csv =
+'TIME,LOCATION,ALTITUDE\n';
+
 measurements.forEach(m=>{
-csv += m.time + ',' + m.alt + '\n';
+
+csv +=
+m.time + ',' +
+m.location + ',' +
+m.alt + '\n';
+
 });
-const blob = new Blob([csv],{type:'text/csv'});
-const a = document.createElement('a');
-a.href = URL.createObjectURL(blob);
-a.download = 'kse_measurements.csv';
+
+const blob =
+new Blob([csv],{
+
+type:'text/csv'
+
+});
+
+const a =
+document.createElement('a');
+
+a.href =
+URL.createObjectURL(blob);
+
+a.download =
+'kse_measurements.csv';
+
 a.click();
+
 }
+
 </script>
 
 </body>
